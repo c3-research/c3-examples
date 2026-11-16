@@ -29,33 +29,41 @@ Setup for Cursor, Codex, VS Code, claude.ai and ChatGPT is in the [MCP docs](htt
 curl -fsSL https://cthree.cloud/install.sh | sh   # install
 c3 login
 git clone https://github.com/c3-research/c3-examples.git
-cd c3-examples/jax-matmul
+cd c3-examples/pytorch-matmul
 c3 deploy -f   # submit and follow logs
 c3 pull        # download results
 ```
 
 ## Examples
 
-### hello.sbatch
+Every job runs inside the Docker image named in its `.c3`. The image must
+already contain the dependencies: jobs have no outbound network, so a script
+cannot `pip install` anything. `python:` projects (`uv sync` on the machine)
+are currently disabled.
 
-Minimal "hello world" example. Prints system info and runs `nvidia-smi` to verify GPU access.
+### pytorch-matmul
+
+PyTorch matrix multiplication benchmark: times the same multiplication on the
+CPU and on the GPU and saves the results. This is the example the
+[quickstart](https://docs.cthree.cloud) uses.
+
+- Runs in the public `pytorch/pytorch` image, which already contains PyTorch
+- Prints the timings to the job log
+- Saves `results/benchmark.json` and `results/benchmark.png`
 
 ```bash
-c3 deploy hello.sbatch
+cd pytorch-matmul
+c3 deploy -f
 ```
 
-### jax-matmul
+### hello.sbatch
 
-JAX matrix multiplication benchmark comparing loop-based vs vectorized (`jax.lax.scan`) approaches. Demonstrates GPU performance and generates a benchmark plot.
-
-Features:
-- Uses UV lockfile for reproducible dependencies
-- Loads matrices from data file
-- Outputs benchmark plot to `results/`
+Minimal legacy Slurm script, deployed unchanged. Prints system info and runs
+`nvidia-smi` to verify GPU access. It names no Docker image, so it needs the
+legacy storage pathway:
 
 ```bash
-cd jax-matmul
-c3 deploy
+c3 deploy hello.sbatch --storage=legacy
 ```
 
 ### algorithm-discovery-loop
