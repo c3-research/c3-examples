@@ -38,8 +38,7 @@ c3 pull        # download results
 
 Every job runs inside the Docker image named in its `.c3`. The image must
 already contain the dependencies: jobs have no outbound network, so a script
-cannot `pip install` anything. `python:` projects (`uv sync` on the machine)
-are currently disabled.
+cannot `pip install` anything.
 
 ### pytorch-matmul
 
